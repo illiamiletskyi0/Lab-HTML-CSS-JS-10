@@ -53,11 +53,14 @@ form.addEventListener('submit', () => {
 /* Booking */
 
 function bindBookButtons() {
-  document.querySelectorAll('.venue-card__book').forEach((button) => {
-    button.addEventListener('click', () => {
-      const venue = venues.find((item) => item.id === button.dataset.id);
-      openBooking(venue, form.date.value || toISODate(new Date()));
-    });
+  // Delegation: cards are re-rendered with innerHTML, so listeners on the
+  // buttons themselves would be lost after every search.
+  results.addEventListener('click', (event) => {
+    const button = event.target.closest('.venue-card__book');
+    if (!button) return;
+
+    const venue = venues.find((item) => item.id === button.dataset.id);
+    openBooking(venue, form.date.value || toISODate(new Date()));
   });
 }
 
