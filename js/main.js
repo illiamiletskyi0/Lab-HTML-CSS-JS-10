@@ -12,6 +12,9 @@ const status = document.getElementById('status');
 // Venues currently on screen
 let venues = [];
 
+// Id of the latest search: responses for older searches are ignored
+let latestSearchId = 0;
+
 /* Mobile menu */
 
 const menuToggle = document.querySelector('.menu-toggle');
@@ -33,10 +36,14 @@ function readFilters() {
 
 async function handleSearch(event) {
   event.preventDefault();
+  const searchId = ++latestSearchId;
   status.textContent = 'Шукаємо…';
   results.setAttribute('aria-busy', 'true');
 
   const found = await fetchVenues(readFilters());
+  // A newer search has started meanwhile: this response is stale
+  if (searchId !== latestSearchId) return;
+
   renderResults(results, found);
   venues = found;
   results.setAttribute('aria-busy', 'false');
