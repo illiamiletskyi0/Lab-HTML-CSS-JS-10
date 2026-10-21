@@ -40,15 +40,13 @@ async function handleSearch(event) {
   renderResults(results, found);
   venues = found;
   results.setAttribute('aria-busy', 'false');
+
+  // Status line (role="status") must describe what is already on screen,
+  // so it is updated after the render, not in a separate submit listener.
+  status.textContent = found.length ? `Знайдено: ${found.length}` : 'Нічого не знайдено';
 }
 
 form.addEventListener('submit', handleSearch);
-
-// Status line, announced by screen readers (role="status")
-form.addEventListener('submit', () => {
-  const count = results.children.length;
-  status.textContent = count ? `Знайдено: ${count}` : 'Нічого не знайдено';
-});
 
 /* Booking */
 
